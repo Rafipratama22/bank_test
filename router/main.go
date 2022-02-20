@@ -48,6 +48,12 @@ func Start() *gin.Engine{
 		rekeningRoute.GET("/detail/:id", rekeningController.GetRekeningByID)
 		rekeningRoute.PUT("/update/:id", rekeningController.UpdateRekening)
 		rekeningRoute.POST("/transfer", rekeningController.TransferRekening)
-	}	
+	}
+
+	merchantRoute := route.Group("/merchant")
+	merchantRoute.Use(authMiddleware.ValidateTokenUser)
+	{
+		
+	}
 	return route
 }

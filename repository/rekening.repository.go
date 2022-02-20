@@ -1,6 +1,8 @@
 package repository
 
 import (
+	"strconv"
+
 	"github.com/Rafipratama22/bank_test/dto"
 	"github.com/Rafipratama22/bank_test/entity"
 	"github.com/google/uuid"
@@ -37,6 +39,12 @@ func (s *rekeningRepository) CreateRekening(saving entity.RekeningEntity) dto.Er
 	if err != nil {
 		return dto.ErrResponse{Message: "Failed to Create Rekening"}
 	}
+	err = s.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "Create Rekening from " + saving.NoRekening.String(),
+	}).Error
+	if err != nil {
+		return dto.ErrResponse{Message: "Failed to Create History"}
+	}
 	return dto.ErrResponse{Message: ""}
 }
 
@@ -65,6 +73,14 @@ func (s *rekeningRepository) UpdateRekening(id int, balance int, pin string) dto
 	if err != nil {
 		return dto.ErrResponse{Message: "Failed to Update Rekening"}
 	}
+
+	err = s.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "Rekening from " + rekening.NoRekening.String() + " has been updated",
+	}).Error
+	if err != nil {
+		return dto.ErrResponse{Message: "Failed to Create History"}
+	}
+
 	return dto.ErrResponse{Message: ""}
 }
 
@@ -76,6 +92,15 @@ func (s *rekeningRepository) AllRekening(user_id uuid.UUID) ([]entity.RekeningEn
 		errResponse.Message = "There is no rekening with this user_id"
 		return rekenings, errResponse
 	}
+	
+	err = s.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "All Rekening from user " + user_id.String() + " has been accessed",
+	}).Error
+	
+	if err != nil {
+		return rekenings, dto.ErrResponse{Message: "Failed to Create History"}
+	}
+
 	errResponse.Message = ""
 	return rekenings, errResponse
 }
@@ -86,6 +111,14 @@ func (s *rekeningRepository) GetRekeningByID(id int) (entity.RekeningEntity, dto
 	if err != nil {
 		return rekening, dto.ErrResponse{Message: "There is no rekening with this id"}
 	}
+	err = s.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "Detail Rekening from " + rekening.NoRekening.String() + " has been accessed",
+	}).Error
+	
+	if err != nil {
+		return rekening, dto.ErrResponse{Message: "Failed to Create History"}
+	}
+
 	return rekening, dto.ErrResponse{Message: ""}
 }
 
@@ -149,6 +182,14 @@ func (s *rekeningRepository) TransferRekening(no_rekening uuid.UUID, balance int
 	if err != nil {
 		tx.Rollback()
 		return dto.ErrResponse{Message: "Failed to Update Rekening"}
+	}
+
+	err = tx.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "Rekening from " + rekening.NoRekening.String() + " has been transfered to " + rekening_tujuan.NoRekening.String() + " with " + strconv.Itoa(balance) + " Rupiah",
+	}).Error
+
+	if err != nil {
+		return dto.ErrResponse{Message: "Failed to Create History"}
 	}
 
 	err = tx.Commit().Error

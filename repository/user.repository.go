@@ -36,6 +36,15 @@ func (c *userRepository) Register(user entity.UserEntity) (entity.UserEntity, dt
 	if result != nil {
 		return user, dto.ErrResponse{Message: "Failed to Create User"}
 	}
+
+	err = c.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "User with Number ID " + user.ID.String() + " success being created",
+	}).Error
+	
+	if err != nil {
+		return user, dto.ErrResponse{Message: "Failed to Create History"}
+	}
+
 	return user, dto.ErrResponse{Message: ""}
 }
 
@@ -59,6 +68,15 @@ func (c *userRepository) Login(email string, password string) (string, dto.ErrRe
 	if result.Error != nil {
 		return "", dto.ErrResponse{Message: "Failed to Update User"}
 	}
+
+	err = c.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "User with Number ID " + user.ID.String() + " success being logged in",
+	}).Error
+	
+	if err != nil {
+		return userToken, dto.ErrResponse{Message: "Failed to Create History"}
+	}
+
 	return userToken, dto.ErrResponse{}
 }
 
@@ -69,5 +87,14 @@ func (c *userRepository) Logout(id uuid.UUID) dto.ErrResponse {
 	if err != nil {
 		return dto.ErrResponse{Message: "Failed to Update User"}
 	}
+
+	err = c.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
+		Action: "User with Number ID " + user.ID.String() + " success being logged out",
+	}).Error
+	
+	if err != nil {
+		return dto.ErrResponse{Message: "Failed to Create History"}
+	}
+
 	return dto.ErrResponse{Message: ""}
 }

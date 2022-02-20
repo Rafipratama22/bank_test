@@ -29,6 +29,6 @@ func SetUpDatabase() *gorm.DB {
 	if err != nil {
 		panic(err)
 	}
-	db.AutoMigrate(&entity.UserEntity{}, &entity.RekeningEntity{})
+	db.AutoMigrate(&entity.UserEntity{}, &entity.RekeningEntity{}, &entity.HistoryEntity{}, &entity.MerchantEntity{})
 	return db
 }

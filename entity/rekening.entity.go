@@ -9,7 +9,7 @@ import (
 
 type RekeningEntity struct {
 	ID         int       `json:"id,omitempty" gorm:"primary_key;auto_increment"`
-	NoRekening uuid.UUID `json:"no_rekening" gorm:"type:varchar(100);not null"`
+	NoRekening uuid.UUID `json:"no_rekening" gorm:"type:uuid;"`
 	Balance    int       `json:"balance" gorm:"type:int;not null;default:0"`
 	Pin        string    `json:"pin" gorm:"type:varchar(100);not null"`
 	Chance     int       `json:"chance" gorm:"type:int;not null;default:0"`
