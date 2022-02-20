@@ -11,3 +11,8 @@ type TransferRekening struct {
 	Pin string `json:"pin"`
 	ID int `json:"id"`
 }
+
+type RegisterRekening struct {
+	NoRekening string `json:"no_rekening"`
+	Balance int `json:"balance"`
+}

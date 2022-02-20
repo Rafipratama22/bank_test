@@ -32,6 +32,7 @@ func NewRekeningController(rekeningRepo repository.RekeningRepository) RekeningC
 func (s *rekeningController) CreateRekening(ctx *gin.Context) {
 	var saving entity.RekeningEntity
 	var errResponse dto.ErrResponse
+	var result dto.RegisterRekening
 	userId := ctx.MustGet("user_id")
 	userID := uuid.MustParse(userId.(string)) 
 	err := ctx.ShouldBindJSON(&saving)
@@ -39,13 +40,11 @@ func (s *rekeningController) CreateRekening(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, err)
 	}
 	saving.UserID = userID
-	errResponse = s.rekeningRepo.CreateRekening(saving)
+	result, errResponse = s.rekeningRepo.CreateRekening(saving)
 	if errResponse.Message != "" {
 		ctx.JSON(http.StatusBadRequest, errResponse)
 	} else {
-		ctx.JSON(http.StatusCreated, gin.H{
-			"message": "Rekening Created",
-		})
+		ctx.JSON(http.StatusCreated, result)
 	}
 }
 

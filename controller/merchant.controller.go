@@ -58,7 +58,7 @@ func (m *merchantController) GetMerchantAll(ctx *gin.Context) {
 
 func (m *merchantController) DetailMerchant(ctx *gin.Context) {
 	var errResponse dto.ErrResponse
-	merchantId := ctx.Param("merchant_id")
+	merchantId := ctx.Param("id")
 	merchantID := uuid.MustParse(merchantId)
 	result, errResponse := m.merchantRepo.DetailMerchant(merchantID)
 	if errResponse.Message != "" {

@@ -12,7 +12,7 @@ import (
 )
 
 type RekeningRepository interface {
-	CreateRekening(saving entity.RekeningEntity) dto.ErrResponse
+	CreateRekening(saving entity.RekeningEntity) (dto.RegisterRekening, dto.ErrResponse)
 	UpdateRekening(id int, balance int, pin string) dto.ErrResponse
 	GetRekeningAll(user_id uuid.UUID) ([]entity.RekeningEntity, dto.ErrResponse)
 	GetRekeningByID(id int) (entity.RekeningEntity, dto.ErrResponse)
@@ -29,23 +29,36 @@ func NewRekeningRepository(db *gorm.DB) RekeningRepository {
 	}
 }
 
-func (s *rekeningRepository) CreateRekening(saving entity.RekeningEntity) dto.ErrResponse {
+func (s *rekeningRepository) CreateRekening(saving entity.RekeningEntity) (dto.RegisterRekening ,dto.ErrResponse) {
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(saving.Pin), bcrypt.DefaultCost)
 	if err != nil {
-		return dto.ErrResponse{Message: "Failed to Generate Password"}
+		return dto.RegisterRekening{
+			NoRekening: "",
+			Balance: 0,
+		} ,dto.ErrResponse{Message: "Failed to Generate Password"}
 	}
 	saving.Pin = string(hashedPassword)
+
 	err = s.db.Create(&saving).Error
 	if err != nil {
-		return dto.ErrResponse{Message: "Failed to Create Rekening"}
+		return dto.RegisterRekening{
+			NoRekening: "",
+			Balance: 0,
+		}, dto.ErrResponse{Message: "Failed to Create Rekening"}
 	}
 	err = s.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
 		Action: "Create Rekening from " + saving.NoRekening.String(),
 	}).Error
 	if err != nil {
-		return dto.ErrResponse{Message: "Failed to Create History"}
+		return dto.RegisterRekening{
+			NoRekening: "",
+			Balance: 0,
+		}, dto.ErrResponse{Message: "Failed to Create History"}
 	}
-	return dto.ErrResponse{Message: ""}
+	return dto.RegisterRekening{
+		NoRekening: saving.NoRekening.String(),
+		Balance: 0,
+	}, dto.ErrResponse{Message: ""}
 }
 
 func (s *rekeningRepository) UpdateRekening(id int, balance int, pin string) dto.ErrResponse {
@@ -66,10 +79,12 @@ func (s *rekeningRepository) UpdateRekening(id int, balance int, pin string) dto
 		return dto.ErrResponse{Message: "Wrong Pin"}
 	}
 	balanceNow := rekening.Balance + balance
-	err = s.db.Model(&rekening).Updates(entity.RekeningEntity{
-		Balance: balanceNow,
-		Chance:  0,
-	}).Error
+	err = s.db.Model(&rekening).Update("balance", balanceNow).Error
+	if err != nil {
+		return dto.ErrResponse{Message: "Failed to Update Rekening"}
+	}
+
+	err = s.db.Model(&rekening).Update("chance", 0).Error
 	if err != nil {
 		return dto.ErrResponse{Message: "Failed to Update Rekening"}
 	}
