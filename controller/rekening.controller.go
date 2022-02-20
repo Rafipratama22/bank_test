@@ -13,7 +13,7 @@ import (
 
 type RekeningController interface{
 	CreateRekening(ctx *gin.Context)
-	AllRekening(ctx *gin.Context)
+	GetRekeningAll(ctx *gin.Context)
 	GetRekeningByID(ctx *gin.Context)
 	UpdateRekening(ctx *gin.Context)
 	TransferRekening(ctx *gin.Context)
@@ -49,12 +49,12 @@ func (s *rekeningController) CreateRekening(ctx *gin.Context) {
 	}
 }
 
-func (s *rekeningController) AllRekening(ctx *gin.Context) {
+func (s *rekeningController) GetRekeningAll(ctx *gin.Context) {
 	var errResponse dto.ErrResponse
 	var rekening []entity.RekeningEntity
 	userId := ctx.MustGet("user_id")
 	userID := uuid.MustParse(userId.(string)) 
-	rekening, errResponse = s.rekeningRepo.AllRekening(userID)
+	rekening, errResponse = s.rekeningRepo.GetRekeningAll(userID)
 	if errResponse.Message != "" {
 		ctx.JSON(http.StatusBadRequest, errResponse)
 	} else {

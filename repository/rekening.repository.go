@@ -14,7 +14,7 @@ import (
 type RekeningRepository interface {
 	CreateRekening(saving entity.RekeningEntity) dto.ErrResponse
 	UpdateRekening(id int, balance int, pin string) dto.ErrResponse
-	AllRekening(user_id uuid.UUID) ([]entity.RekeningEntity, dto.ErrResponse)
+	GetRekeningAll(user_id uuid.UUID) ([]entity.RekeningEntity, dto.ErrResponse)
 	GetRekeningByID(id int) (entity.RekeningEntity, dto.ErrResponse)
 	TransferRekening(no_rekening uuid.UUID, balance int, pin string, id int) dto.ErrResponse
 }
@@ -84,7 +84,7 @@ func (s *rekeningRepository) UpdateRekening(id int, balance int, pin string) dto
 	return dto.ErrResponse{Message: ""}
 }
 
-func (s *rekeningRepository) AllRekening(user_id uuid.UUID) ([]entity.RekeningEntity, dto.ErrResponse) {
+func (s *rekeningRepository) GetRekeningAll(user_id uuid.UUID) ([]entity.RekeningEntity, dto.ErrResponse) {
 	var rekenings []entity.RekeningEntity
 	var errResponse dto.ErrResponse
 	err := s.db.Where("user_id = ?", user_id).Find(&rekenings).Error
@@ -92,7 +92,7 @@ func (s *rekeningRepository) AllRekening(user_id uuid.UUID) ([]entity.RekeningEn
 		errResponse.Message = "There is no rekening with this user_id"
 		return rekenings, errResponse
 	}
-	
+
 	err = s.db.Model(&entity.HistoryEntity{}).Create(&entity.HistoryEntity{
 		Action: "All Rekening from user " + user_id.String() + " has been accessed",
 	}).Error

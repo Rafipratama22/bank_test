@@ -21,6 +21,8 @@ var (
 	authMiddleware middleware.AuthMiddleware = middleware.NewAuthMiddleware(db)
 	rekeningRepository repository.RekeningRepository = repository.NewRekeningRepository(db)
 	rekeningController controller.RekeningController = controller.NewRekeningController(rekeningRepository)
+	merchantRepository repository.MerchantRepository = repository.NewMerchantRepository(db)
+	merchantController controller.MerchantController = controller.NewMerchantController(merchantRepository)
 )
 
 func MainServer() *Server {
@@ -44,7 +46,7 @@ func Start() *gin.Engine{
 	rekeningRoute.Use(authMiddleware.ValidateTokenUser)
 	{
 		rekeningRoute.POST("/create", rekeningController.CreateRekening)
-		rekeningRoute.GET("/list", rekeningController.AllRekening)
+		rekeningRoute.GET("/list", rekeningController.GetRekeningAll)
 		rekeningRoute.GET("/detail/:id", rekeningController.GetRekeningByID)
 		rekeningRoute.PUT("/update/:id", rekeningController.UpdateRekening)
 		rekeningRoute.POST("/transfer", rekeningController.TransferRekening)
@@ -53,7 +55,9 @@ func Start() *gin.Engine{
 	merchantRoute := route.Group("/merchant")
 	merchantRoute.Use(authMiddleware.ValidateTokenUser)
 	{
-		
+		merchantRoute.POST("/create", merchantController.CreateMerchant)
+		merchantRoute.GET("/list", merchantController.GetMerchantAll)
+		merchantRoute.GET("/detail/:id", merchantController.DetailMerchant)
 	}
 	return route
 }

@@ -10,7 +10,11 @@ import (
 	"github.com/google/uuid"
 )
 
-type MerchantController interface{}
+type MerchantController interface{
+	CreateMerchant(ctx *gin.Context)
+	GetMerchantAll(ctx *gin.Context)
+	DetailMerchant(ctx *gin.Context)
+}
 
 type merchantController struct {
 	merchantRepo repository.MerchantRepository
