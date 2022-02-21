@@ -15,7 +15,7 @@ func SetUpDatabase() *gorm.DB {
 	godotenv.Load()
 	db_name := os.Getenv("DB_NAME")
 	db_user := os.Getenv("DB_USER")
-	db_pass := os.Getenv("DB_PASS")
+	db_pass := os.Getenv("DB_PASSWORD")
 	db_host := os.Getenv("DB_HOST")
 	db_port := os.Getenv("DB_PORT")
 
