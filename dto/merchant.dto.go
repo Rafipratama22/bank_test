@@ -14,5 +14,13 @@ type MerchantListResponse struct {
 	NoRekening uuid.UUID `json:"no_rekening"`
 	UserID uuid.UUID `json:"user_id"`
 	User entity.UserEntity `json:"user"`
-	Rekneing entity.RekeningEntity `json:"rekneing"`
+	Rekening entity.RekeningEntity `json:"rekneing"`
+}
+
+type DeleteMerchantResponse struct {
+	Message string `json:"message"`
+}
+
+type UpdateMerchantResponse struct {
+	Message string `json:"message"`
 }

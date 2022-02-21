@@ -26,6 +26,16 @@ func NewUserController(userRepo repository.UserRepository) UserController {
 	}
 }
 
+// Register
+// @Summary Register yang dilakukan oleh user baik dia sebagai consumer maupun merchant untuk pengembalian data nya akan mengembalikan user yang sudah terdaftar dengan password yang sudah di hash
+// @Description Register yang dilakukan oleh user baik dia sebagai consumer maupun merchant untuk pengembalian data nya akan mengembalikan user yang sudah terdaftar dengan password yang sudah di hash
+// @Tags Form
+// @Accept  */*
+// @Produce  json
+// @Param data body entity.UserEntity true "User"
+// @Success 201 {object} entity.UserEntity
+// @Failure 400 {object} dto.ErrResponse
+// @Router /user/register [post]
 func (c *userController) Register(ctx *gin.Context) {
 	var user entity.UserEntity
 	var errResponse dto.ErrResponse
@@ -41,6 +51,16 @@ func (c *userController) Register(ctx *gin.Context) {
 	}
 }
 
+// Login
+// @Summary Login yang dilakukan setelah user melakukan register, jika sudah berhasil maka pengguna akan mendapatkan token yang akan digunakan untuk mengakses API
+// @Description Login yang dilakukan setelah user melakukan register, jika sudah berhasil maka pengguna akan mendapatkan token yang akan digunakan untuk mengakses API
+// @Tags Form
+// @Accept  */*
+// @Produce  json
+// @Param data body dto.LoginDto true "User"
+// @Success 201 {object} dto.LoginDtoResponse
+// @Failure 400 {object} dto.ErrResponse
+// @Router /user/login [post]
 func (c *userController) Login(ctx *gin.Context) {
 	var loginDto dto.LoginDto
 	var errResponse dto.ErrResponse
@@ -60,8 +80,20 @@ func (c *userController) Login(ctx *gin.Context) {
 	}
 }
 
+// Logout
+// @Summary Logout dapat dilakukan oleh user yang sudah login, jika sudah berhasil
+// @Description Logout dapat dilakukan oleh user yang sudah login, jika sudah berhasil
+// @Tags Form
+// @Accept  */*
+// @Produce  json
+// @Security ApiKeyAuth
+// @Param data body dto.LoginDto true "User"
+// @Success 201 {object} dto.LogoutDtoResponse
+// @Failure 400 {object} dto.ErrResponse
+// @Router /user/logout [post]
 func (c *userController) Logout(ctx *gin.Context) {
 	var errResponse dto.ErrResponse
+	var logoutResponse dto.LogoutDtoResponse
 	userId := ctx.MustGet("user_id")
 	userID := uuid.MustParse(userId.(string))
 	errResponse = c.userRepo.Logout(userID)
@@ -69,6 +101,7 @@ func (c *userController) Logout(ctx *gin.Context) {
 		errResponse.Message = "Failed to Logout User"
 		ctx.JSON(http.StatusBadRequest, errResponse)
 	} else {
-		ctx.JSON(http.StatusOK, gin.H{"message": "Logout User Success"})
+		logoutResponse.Message = "Successfully Logout User"
+		ctx.JSON(http.StatusOK, logoutResponse)
 	}
 }

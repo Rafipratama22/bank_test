@@ -7,6 +7,9 @@ import (
 	"github.com/Rafipratama22/bank_test/repository"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	swaggerFiles "github.com/swaggo/files"
+	ginSwagger "github.com/swaggo/gin-swagger"
+	_ "github.com/Rafipratama22/bank_test/docs"
 )
 
 type Server struct {
@@ -31,10 +34,26 @@ func MainServer() *Server {
 	}
 }
 
+
+// @title Gin Swagger Example API
+// @version 2.0
+// @description This is a sample server server.
+// @termsOfService http://swagger.io/terms/
+
+// @contact.name API Support
+// @contact.url http://www.swagger.io/support
+// @contact.email support@swagger.io
+
+// @license.name Apache 2.0
+// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+
+// @host localhost:8080
+// @BasePath /
+// @schemes http
 func Start() *gin.Engine{
 	// Load .env file
 	route := gin.Default()
-	
+	url := ginSwagger.URL("http://localhost:8080/swagger/doc.json")
 	userRoute := route.Group("/user")
 	{
 		userRoute.POST("/register", userController.Register)
@@ -58,6 +77,9 @@ func Start() *gin.Engine{
 		merchantRoute.POST("/create", merchantController.CreateMerchant)
 		merchantRoute.GET("/list", merchantController.GetMerchantAll)
 		merchantRoute.GET("/detail/:id", merchantController.DetailMerchant)
+		merchantRoute.PUT("/update/:id", merchantController.UpdateMerchant)
+		merchantRoute.DELETE("/delete/:id", merchantController.DeleteMerchant)
 	}
+	route.GET("/swagger/*any", ginSwagger.WrapHandler(swaggerFiles.Handler, url))
 	return route
 }

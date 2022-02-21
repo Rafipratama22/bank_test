@@ -1,0 +1,621 @@
+basePath: /
+definitions:
+  dto.ErrResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.LoginDto:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
+  dto.LoginDtoResponse:
+    properties:
+      token:
+        type: string
+    type: object
+  dto.LogoutDtoResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  dto.MerchantListResponse:
+    properties:
+      address:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      no_rekening:
+        type: string
+      phone:
+        type: string
+      rekneing:
+        $ref: '#/definitions/entity.RekeningEntity'
+      user:
+        $ref: '#/definitions/entity.UserEntity'
+      user_id:
+        type: string
+    type: object
+  dto.RegisterRekening:
+    properties:
+      balance:
+        type: integer
+      no_rekening:
+        type: string
+    type: object
+  dto.TransferRekening:
+    properties:
+      balance:
+        type: integer
+      id:
+        type: integer
+      no_rekening:
+        type: string
+      pin:
+        type: string
+    type: object
+  dto.TransferRekeningResponse:
+    properties:
+      balance:
+        type: integer
+      message:
+        type: string
+      no_rekening:
+        type: string
+    type: object
+  dto.UpdateRekening:
+    properties:
+      balance:
+        type: integer
+      pin:
+        type: string
+    type: object
+  dto.UpdateRekeningResponse:
+    properties:
+      message:
+        type: string
+    type: object
+  entity.MerchantEntity:
+    properties:
+      address:
+        description: |-
+          Post Address
+          @Column(type:string)
+        type: string
+      created_at:
+        description: |-
+          Post Created At
+          @Column(type:datetime)
+        type: string
+      id:
+        description: |-
+          Post ID
+          @PrimaryKey
+          @Column(type:uuid, unique: true)
+        type: string
+      name:
+        description: |-
+          Post Name
+          @Column(type:string)
+        type: string
+      no_rekening:
+        description: |-
+          Post No Rekening
+          @Column(type:uuid)
+        type: string
+      phone:
+        description: |-
+          Post Phone
+          @Column(type:string)
+        type: string
+      updated_at:
+        description: |-
+          Post Updated At
+          @Column(type:datetime)
+        type: string
+      user_id:
+        description: |-
+          Post User ID
+          @Column(type:uuid)
+        type: string
+    type: object
+  entity.RekeningEntity:
+    properties:
+      balance:
+        description: |-
+          Post Balance
+          @Column(type:int)
+        type: integer
+      chance:
+        description: |-
+          Post Chance
+          @Column(type:datetime)
+        type: integer
+      created_at:
+        description: |-
+          Post Created At
+          @Column(type:datetime)
+        type: string
+      id:
+        description: |-
+          Post ID
+          @PrimaryKey
+          @Column(type:int, unique: true, autoincrement: true)
+        type: integer
+      no_rekening:
+        description: |-
+          Post No Rekening
+          @Column(type:uuid, unique: true)
+        type: string
+      pin:
+        description: |-
+          Post Pin
+          @Column(type:string)
+        type: string
+      updated_at:
+        description: |-
+          Post Updated At
+          @Column(type:datetime)
+        type: string
+      user_id:
+        description: |-
+          Post User ID
+          @Column(type:uuid)
+        type: string
+    type: object
+  entity.UserEntity:
+    properties:
+      created_at:
+        description: |-
+          Post Created At
+          @Column(type:datetime)
+        type: string
+      email:
+        description: |-
+          Post Email
+          @Column(type:string)
+        type: string
+      id:
+        description: |-
+          Post ID
+          @PrimaryKey
+          @Column(type:uuid, unique: true)
+        type: string
+      is_active:
+        description: |-
+          Post IsActive
+          @Column(type:boolean)
+        type: boolean
+      name:
+        description: |-
+          Post Name
+          @Column(type:string)
+        type: string
+      password:
+        description: |-
+          Post Email
+          @Column(type:string)
+        type: string
+      updated_at:
+        description: |-
+          Post Updated At
+          @Column(type:datetime)
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is a sample server server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: Gin Swagger Example API
+  version: "2.0"
+paths:
+  /merchant/create:
+    post:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat membuat akun merchant untuk kebutuhan
+        pribadi, dengan memasukan no_rekening, address, dan lain lain
+      parameters:
+      - description: Merchant
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MerchantEntity'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.MerchantEntity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat membuat akun merchant untuk kebutuhan pribadi,
+        dengan memasukan no_rekening, address, dan lain lain
+      tags:
+      - Merchant
+  /merchant/delete/:id:
+    delete:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat menghapus merchant yang ada di bank
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MerchantListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat menghapus merchant yang ada di bank
+      tags:
+      - Merchant
+  /merchant/detail/:id:
+    get:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat melihat semua merchant yang ada di
+        bank dan dapat melihat detail merchant seperti user dan rekening
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.MerchantListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat melihat semua merchant yang ada di bank
+        dan dapat melihat detail merchant seperti user dan rekening
+      tags:
+      - Merchant
+  /merchant/list:
+    get:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat melihat semua merchant yang ada di
+        bank dan dapat melihat detail merchant seperti user dan rekening
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/dto.MerchantListResponse'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat melihat semua merchant yang ada di bank
+        dan dapat melihat detail merchant seperti user dan rekening
+      tags:
+      - Merchant
+  /merchant/update/:id:
+    put:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dan memiliki merchant yang dapat mengupdate
+        merchant tersebut
+      parameters:
+      - description: Merchant ID
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Merchant
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.MerchantEntity'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.MerchantEntity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+        "404":
+          description: Not Found
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dan memiliki merchant yang dapat mengupdate merchant
+        tersebut
+      tags:
+      - Merchant
+  /rekening/create:
+    post:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat membuka rekening baru dengan memasukan
+        pin saja karena user akan terhubung dengan rekening setelah dibuat
+      parameters:
+      - description: Rekening
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.RekeningEntity'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.RegisterRekening'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat membuka rekening baru dengan memasukan
+        pin saja karena user akan terhubung dengan rekening setelah dibuat
+      tags:
+      - Rekening
+  /rekening/detail/:id:
+    get:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat mengakses rekening yang telah dibuat
+        dengan memberi id rekening
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/entity.RekeningEntity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat mengakses rekening yang telah dibuat dengan
+        memberi id rekening
+      tags:
+      - Rekening
+  /rekening/list:
+    get:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat mengakses rekening yang telah dibuat,
+        sistem akan menyocokan rekening yang telah dibuat oleh user
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/entity.RekeningEntity'
+            type: array
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat mengakses rekening yang telah dibuat, sistem
+        akan menyocokan rekening yang telah dibuat oleh user
+      tags:
+      - Rekening
+  /rekening/transfer:
+    post:
+      consumes:
+      - '*/*'
+      description: user yang sudah login baik customer maupun merchant dapat melakukan
+        transfer uamg ke rekening user yang telah terdaftar
+      parameters:
+      - description: Rekening
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.TransferRekening'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.TransferRekeningResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login baik customer maupun merchant dapat melakukan
+        transfer uamg ke rekening user yang telah terdaftar
+      tags:
+      - Rekening
+  /rekening/update/:id:
+    put:
+      consumes:
+      - '*/*'
+      description: user yang sudah login dapat mengupdate balance yang ke rekening
+        yang sudah ada dengan memasukkan pin dan sejumlah uang yang ingin dimasukkan
+      parameters:
+      - description: id
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Rekening
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.UpdateRekening'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/dto.UpdateRekeningResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: user yang sudah login dapat mengupdate balance yang ke rekening yang
+        sudah ada dengan memasukkan pin dan sejumlah uang yang ingin dimasukkan
+      tags:
+      - Rekening
+  /user/login:
+    post:
+      consumes:
+      - '*/*'
+      description: Login yang dilakukan setelah user melakukan register, jika sudah
+        berhasil maka pengguna akan mendapatkan token yang akan digunakan untuk mengakses
+        API
+      parameters:
+      - description: User
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.LoginDtoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      summary: Login yang dilakukan setelah user melakukan register, jika sudah berhasil
+        maka pengguna akan mendapatkan token yang akan digunakan untuk mengakses API
+      tags:
+      - Form
+  /user/logout:
+    post:
+      consumes:
+      - '*/*'
+      description: Logout dapat dilakukan oleh user yang sudah login, jika sudah berhasil
+      parameters:
+      - description: User
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/dto.LoginDto'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/dto.LogoutDtoResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      security:
+      - ApiKeyAuth: []
+      summary: Logout dapat dilakukan oleh user yang sudah login, jika sudah berhasil
+      tags:
+      - Form
+  /user/register:
+    post:
+      consumes:
+      - '*/*'
+      description: Register yang dilakukan oleh user baik dia sebagai consumer maupun
+        merchant untuk pengembalian data nya akan mengembalikan user yang sudah terdaftar
+        dengan password yang sudah di hash
+      parameters:
+      - description: User
+        in: body
+        name: data
+        required: true
+        schema:
+          $ref: '#/definitions/entity.UserEntity'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/entity.UserEntity'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/dto.ErrResponse'
+      summary: Register yang dilakukan oleh user baik dia sebagai consumer maupun
+        merchant untuk pengembalian data nya akan mengembalikan user yang sudah terdaftar
+        dengan password yang sudah di hash
+      tags:
+      - Form
+schemes:
+- http
+securityDefinitions:
+  ApiKeyAuth:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

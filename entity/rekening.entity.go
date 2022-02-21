@@ -7,14 +7,32 @@ import (
 	"gorm.io/gorm"
 )
 
+// swagger:model Rekening
 type RekeningEntity struct {
+	// Post ID
+	// @PrimaryKey
+	// @Column(type:int, unique: true, autoincrement: true)
 	ID         int       `json:"id,omitempty" gorm:"primary_key;auto_increment"`
-	NoRekening uuid.UUID `json:"no_rekening" gorm:"type:uuid;"`
+	// Post No Rekening
+	// @Column(type:uuid, unique: true)
+	NoRekening uuid.UUID `json:"no_rekening" gorm:"type:uuid;unique"`
+	// Post Balance
+	// @Column(type:int)
 	Balance    int       `json:"balance" gorm:"type:int;;default:0"`
+	// Post Pin
+	// @Column(type:string)
 	Pin        string    `json:"pin" gorm:"type:varchar(400);"`
+	// Post Chance
+	// @Column(type:datetime)
 	Chance     int       `json:"chance" gorm:"type:int;default:0"`
+	// Post User ID
+	// @Column(type:uuid)
 	UserID     uuid.UUID `json:"user_id" gorm:"type:uuid;"`
+	// Post Created At
+	// @Column(type:datetime)
 	CreatedAt  time.Time `json:"created_at" gorm:"type:time;default:CURRENT_TIMESTAMP"`
+	// Post Updated At
+	// @Column(type:datetime)
 	UpdatedAt  time.Time `json:"updated_at" gorm:"type:time;default:CURRENT_TIMESTAMP"`
 }
 

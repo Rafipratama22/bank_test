@@ -16,7 +16,7 @@ type RekeningRepository interface {
 	UpdateRekening(id int, balance int, pin string) dto.ErrResponse
 	GetRekeningAll(user_id uuid.UUID) ([]entity.RekeningEntity, dto.ErrResponse)
 	GetRekeningByID(id int) (entity.RekeningEntity, dto.ErrResponse)
-	TransferRekening(no_rekening uuid.UUID, balance int, pin string, id int) dto.ErrResponse
+	TransferRekening(no_rekening uuid.UUID, balance int, pin string, id int, userID uuid.UUID) dto.ErrResponse
 }
 
 type rekeningRepository struct {
@@ -137,7 +137,7 @@ func (s *rekeningRepository) GetRekeningByID(id int) (entity.RekeningEntity, dto
 	return rekening, dto.ErrResponse{Message: ""}
 }
 
-func (s *rekeningRepository) TransferRekening(no_rekening uuid.UUID, balance int, pin string, id int) dto.ErrResponse {
+func (s *rekeningRepository) TransferRekening(no_rekening uuid.UUID, balance int, pin string, id int, userID uuid.UUID) dto.ErrResponse {
 	var rekening entity.RekeningEntity
 	var user entity.UserEntity
 	var rekening_tujuan entity.RekeningEntity
@@ -148,6 +148,9 @@ func (s *rekeningRepository) TransferRekening(no_rekening uuid.UUID, balance int
 		}
 	}()
 	err := tx.Where("id = ?", id).First(&rekening).Error
+	if rekening.UserID != userID {
+		return dto.ErrResponse{Message: "You are not the owner of this rekening"}
+	}
 	if rekening.Balance-balance < 0 {
 		tx.Rollback()
 		return dto.ErrResponse{Message: "Insufficient Balance"}

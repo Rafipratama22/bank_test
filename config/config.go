@@ -11,6 +11,10 @@ import (
 	"gorm.io/gorm"
 )
 
+var DB *gorm.DB
+
+// SetUpDatabase untuk menginisialisasi database
+// Menggunakan GORM sebagaim ORM dan menggunakan driver postgres sebagai database
 func SetUpDatabase() *gorm.DB {
 	godotenv.Load()
 	db_name := os.Getenv("DB_NAME")
@@ -30,5 +34,20 @@ func SetUpDatabase() *gorm.DB {
 		panic(err)
 	}
 	db.AutoMigrate(&entity.UserEntity{}, &entity.RekeningEntity{}, &entity.HistoryEntity{}, &entity.MerchantEntity{})
+	DB = db
 	return db
 }
+
+func GetDatabaseTest() *gorm.DB {
+	db := SetUpDatabase()
+	return db
+}
+
+func ClearTable() {
+	DB.Exec("DELETE FROM user_entities")
+	DB.Exec("DELETE FROM rekening_entities")
+	DB.Exec("DELETE FROM history_entities")
+	DB.Exec("DELETE FROM merchant_entities")
+}
+
+
