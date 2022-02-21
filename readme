@@ -3,7 +3,11 @@ untuk run saja bisa menggunakan command make run
 untuk membuild docker image bisa menggunakan command make docker-image-build
 untuk me run image docker yang sudah di build bisa menggunakan docker-image-run
 dan untuk menggunakan docker compose untuk menjalan kan bisa menggunakan commmand make docker-compose
+untuk men stop docker yang sudah di build bisa menggunakan docker-compose-stop
 
 step untuk deployment:
 pertama untuk git clone terlebih dahulu setelah itu bisa install docker terlebih dahulu atau jika sudah maka tinggal jalan kan command make docker-compose untuk yang simple,
 jika hanya untuk run saja bisa menggunakan make run saja
+
+Note:
+untuk env bisa diisi lewat .env.example atau untuk .env yang saya gunakan ada di dalam .env.zip hanya perlu di unzip lalu bisa digunakan kembali

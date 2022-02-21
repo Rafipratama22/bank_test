@@ -6,3 +6,5 @@ docker-image-run:
 	docker image run -p 8080:8080 bank_test
 docker-compose:
 	docker-compose up -d
+swag:
+	swag init
